@@ -9,12 +9,18 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import uk.ac.shef.oak.com4510.R
 import java.util.*
+import uk.ac.shef.oak.com4510.databinding.ActivityNewVisitBinding
+import uk.ac.shef.oak.com4510.viewmodel.NewVisitViewModel
 
 class NewVisitActivity : AppCompatActivity() {
 
+
+    private var myNewVisitViewModel : NewVisitViewModel = NewVisitViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_visit)
+        val binding = ActivityNewVisitBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
         val dateView : TextView = findViewById<TextView>(R.id.dateView)
         val timeView : TextView = findViewById<TextView>(R.id.timeView)
         getTimeDate(dateView, timeView)
@@ -29,11 +35,8 @@ class NewVisitActivity : AppCompatActivity() {
         }
 
         handler.post(runnableCode)
+        binding.viewModel = myNewVisitViewModel
 
-    }
-    fun sendMessage(view: View?) {
-        Log.d("cacat","cacayt" )
-        // Do something in response to button click
     }
 
     @SuppressLint("SetTextI18n")

@@ -7,10 +7,10 @@ import android.view.View
 import androidx.core.content.ContextCompat.startActivity
 import uk.ac.shef.oak.com4510.view.MapsActivity
 
-class NewVisitViewModel {
-     fun onStartButtonClicked() {
+class NewVisitViewModel : VisitInterface {
+     override fun onStartButtonClicked(context : Context) {
         Log.d("cacat","cacayt" )
-//        val intent = Intent(context, MapsActivity::class.java)
-//        context.startActivity(intent)
+        val intent = Intent(context, MapsActivity::class.java)
+        context.startActivity(intent)
     }
 }

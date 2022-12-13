@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="uk.ac.shef.oak.com4510.viewmodel.NewVisitViewModel" />
+            type="uk.ac.shef.oak.com4510.viewmodel.VisitInterface" />
     </data>
 
     <LinearLayout
@@ -130,7 +130,7 @@
                 android:id="@+id/startBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.onStartButtonClicked()}"
+                android:onClick="@{() -> viewModel.onStartButtonClicked(context)}"
                 android:text="Start"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
