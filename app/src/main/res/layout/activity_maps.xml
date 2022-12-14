@@ -1,71 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
   -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.MapsActivity">
 
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout xmlns:map="http://schemas.android.com/apk/res-auto"
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.content.Context" />
+
+        <variable
+            name="viewModel"
+            type="uk.ac.shef.oak.com4510.viewmodel.MapsInterface" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/map"
-            class="com.google.android.gms.maps.SupportMapFragment"
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:scrollbars="vertical" />
+            android:layout_height="match_parent"
+            tools:context=".view.MapsActivity">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0pt"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            <LinearLayout xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/map"
+                    class="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="10"
+                    android:scrollbars="vertical" />
 
 
-            <Button
-                android:id="@+id/button_end"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:text="Stop"
-                android:textAlignment="center"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0pt"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/visitLabel"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Temperature: xx; Pressure"
-                android:textColor="#000000"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textAlignment="center"/>
 
-            <Button
-                android:id="@+id/button_pic"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:text="Picture"
-                android:textAlignment="center"/>
+                    <Button
+                        android:id="@+id/button_end"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:onClick="@{() -> viewModel.onStopButtonClicked(context)}"
+                        android:text="Stop"
+                        android:textAlignment="center" />
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/visitLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Temperature: xx; Pressure"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/button_pic"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:text="Picture"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 
-</FrameLayout>
-
+</layout>

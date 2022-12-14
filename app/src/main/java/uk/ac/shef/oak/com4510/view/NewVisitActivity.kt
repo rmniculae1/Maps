@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import uk.ac.shef.oak.com4510.R
@@ -36,6 +37,7 @@ class NewVisitActivity : AppCompatActivity() {
 
         handler.post(runnableCode)
         binding.viewModel = myNewVisitViewModel
+
 
     }
 
