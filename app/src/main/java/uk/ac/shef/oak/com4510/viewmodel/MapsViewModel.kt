@@ -11,4 +11,5 @@ class MapsViewModel : MapsInterface{
         val intent = Intent(context, NewVisitActivity::class.java)
         context.startActivity(intent)
     }
+
 }
