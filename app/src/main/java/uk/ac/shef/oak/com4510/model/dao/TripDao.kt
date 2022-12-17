@@ -14,7 +14,7 @@ interface TripDao {
     fun getTrip(given_id: Int) : Flow<Trip>
 
     @Query("SELECT * from trip")
-    suspend fun getAllTrips() : List<Trip>
+    suspend fun getAllTrips() : Flow<List<Trip>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(trip: Trip)
