@@ -6,7 +6,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import uk.ac.shef.oak.com4510.model.data.Photo
-
+/**
+ * PhotoDao
+ *
+ * This class provides an instance of a Dao to interact with the photos table
+ * It has useful functions to execute queries on the photos table
+ *
+ */
 @Dao
 interface PhotoDao {
 
@@ -22,7 +28,7 @@ interface PhotoDao {
     @Query("SELECT * from photo where sensorId = :given_id")
     fun getPhotosFromSensor(given_id: Int) : Flow<List<Photo>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(photo: Photo)
 
     @Query("DELETE FROM photo")

@@ -8,6 +8,13 @@ import androidx.room.TypeConverters
 import uk.ac.shef.oak.com4510.model.dao.TripDao
 import uk.ac.shef.oak.com4510.model.extensions.Converters
 
+/**
+ * Database
+ *
+ * This class provides the singleton that room uses to build the database
+ *
+ */
+
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @Database(entities = [Photo::class, Sensor::class, Trip::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
