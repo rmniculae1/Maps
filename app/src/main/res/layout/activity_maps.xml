@@ -5,16 +5,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
 
-        <import type="android.view.View" />
-
-        <import type="android.content.Context" />
-
-        <variable
-            name="viewModel"
-            type="uk.ac.shef.oak.com4510.viewmodel.MapsInterface" />
-    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,7 +49,6 @@
                         android:adjustViewBounds="true"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        android:onClick="@{() -> viewModel.onStopButtonClicked(context)}"
                         android:text="Stop"
                         android:textAlignment="center" />
 
@@ -68,7 +58,6 @@
                         android:layout_height="35dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="Temperature: xx; Pressure"
                         android:textAlignment="center"
                         android:textColor="#000000"
                         android:textSize="15sp"

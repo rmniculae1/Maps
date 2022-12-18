@@ -4,40 +4,33 @@ package uk.ac.shef.oak.com4510.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-
 import android.graphics.Color
-
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
-
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
-
 import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
-import uk.ac.shef.oak.com4510.viewmodel.MapsViewModel
-import uk.ac.shef.oak.com4510.viewmodel.NewVisitViewModel
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -46,12 +39,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var i = 0
     private var ok = 0
-    private var i1 = 0
-    private var ok1 = 0
+
     private lateinit var sensorManager: SensorManager
-    private var myMapsViewModel: MapsViewModel = MapsViewModel()
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mButtonEnd: Button? = null
+    private var mButtonPic: Button? = null
+    private var latlngPoint: Location? = null
+    private lateinit var title: String
+    private lateinit var date: Date
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,29 +56,74 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val extras = intent.extras
+        if (extras != null) {
+            title = extras.getString("title").toString()
+            date = intent.getSerializableExtra("date") as Date
+            if (title == "") {
+                title = "No title"
+            }
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        startLocationUpdates()
+        mButtonPic = findViewById<View>(R.id.button_pic) as Button
+        mButtonPic!!.setOnClickListener {
+
+        }
+
         txtView = findViewById(R.id.visitLabel)
-
-        binding.viewModel = myMapsViewModel
-
 
         calculatePressure { pressure ->
             if (ok == 0) {
-                Log.d("pres", pressure.toString())
-                txtView.text =
-                    "Pressure: " + pressure.toString() // Calculate pressure for the first time
-                ok = 1
+                if (i == 20) {
+
+                    txtView.text =
+                        "Pressure: " + pressure.toString() // Calculate pressure for the first time
+                    ok = 1
+                    mLocationRequest = LocationRequest.create().apply {
+                        interval = 5000
+                        fastestInterval = 5000
+                        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    }
+                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+                    startLocationUpdates()
+
+
+                }
+            }
+            if (ok == 1 && i == 30) {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                //val date: Date = dateFormat.parse(date.toString())
+                Log.d("test", latlngPoint.toString())
+                Log.d("test", pressure.toString())
+                Log.d("test", title)
+                Log.d("test", date.toString())
+                stopLocationUpdates()
+                ok = 2
             }
 
-            if (i == 300) {
-                Log.d("update", pressure.toString())
+
+            if (i == 300 && ok == 2) {
+
                 txtView.text =
                     "Pressure: " + pressure.toString()  // Update the label every 20 seconds
+
+
+                mLocationRequest = LocationRequest.create().apply {
+                    interval = 5000
+                    fastestInterval = 5000
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                }
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+                startLocationUpdates()
+                Log.d("test", latlngPoint.toString())
+                Log.d("test", pressure.toString())
+            } else if (i == 302 && ok == 2) {
+                stopLocationUpdates()
                 i = 0;
             }
             i++
@@ -93,12 +135,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     /**
      * it stops the location updates
      */
-    private fun stopLocationUpdates() {
+    fun stopLocationUpdates() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+
+        Log.d("MAP", "services stopped")
     }
 
 
-    private fun startLocationUpdates() {
+    fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -138,16 +182,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        mLocationRequest = LocationRequest.create().apply {
-            interval = 5000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        startLocationUpdates()
-    }
 
     private var mCurrentLocation: Location? = null
     private var mLastUpdateTime: String? = null
@@ -157,6 +191,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mCurrentLocation = locationResult.getLastLocation()
             mLastUpdateTime = DateFormat.getTimeInstance().format(Date())
             Log.i("MAP", "new location " + mCurrentLocation.toString())
+            latlngPoint = mCurrentLocation
             if (mMap != null) mMap.addMarker(
                 MarkerOptions().position(
                     LatLng(
