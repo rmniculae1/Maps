@@ -5,6 +5,14 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.nio.file.Path
+/**
+ * Represents a photo
+ * @property id The id of the photo in the Database
+ * @property  path The path of the photo in the file system
+ * @property metadata Additional metadata of the photo
+ * @property tripId The trip id in which this photo is associated
+ * @property sensorId The sensor id to associate the latest reading to a photo
+ */
 
 @Entity(tableName = "photo",
     foreignKeys = [

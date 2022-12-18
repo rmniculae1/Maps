@@ -6,7 +6,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import uk.ac.shef.oak.com4510.model.data.Trip
-
+/**
+ * TripDao
+ *
+ * This class provides an instance of a Dao to interact with the trip table
+ * It has useful functions to execute queries on the said table
+ *
+ */
 @Dao
 interface TripDao {
 
@@ -16,7 +22,7 @@ interface TripDao {
     @Query("SELECT * from trip")
     suspend fun getAllTrips() : Flow<List<Trip>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(trip: Trip)
 
     @Query("DELETE FROM trip")

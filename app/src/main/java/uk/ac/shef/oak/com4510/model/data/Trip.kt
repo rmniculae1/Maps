@@ -4,6 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
+/**
+ * Represents a Trip
+ * @property id id of the trip in the Database
+ * @property date date of the trip
+ * @property title name of the trip
+ */
+
 @Entity(tableName = "trip")
 data class Trip(
     @PrimaryKey(autoGenerate = true)
