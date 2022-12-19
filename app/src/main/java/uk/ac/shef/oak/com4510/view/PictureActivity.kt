@@ -106,6 +106,9 @@ class PictureActivity : AppCompatActivity() {
                 Log.d("test", "photoId: $photo_id")
 
             }
+
+            finish()
+
         }
     }
 }

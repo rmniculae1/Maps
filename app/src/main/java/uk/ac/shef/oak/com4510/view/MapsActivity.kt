@@ -94,24 +94,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .toInt()
         }
 
-
-            fixedRateTimer("timer", false, 5000L, 20 * 1000) {
-                runBlocking {
-                    sensorId = AppDatabase
-                        .getDatabase(applicationContext)
-                        .sensorDao()
-                        .insert(
-                            ModelSensor(
-                                latitude = latlngPoint?.latitude ?: 9999.0,
-                                longitude = latlngPoint?.longitude ?: 9999.0,
-                                pressure = pressure,
-                                temperature = temperature,
-                                tripId = tripId
-                            )
-                        ).toInt()
-                }
-        }
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -265,6 +247,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     ), 14.0f
                 )
             )
+
+            fixedRateTimer("timer", false, 0L, 20 * 1000) {
+                runBlocking {
+                    sensorId = AppDatabase
+                        .getDatabase(applicationContext)
+                        .sensorDao()
+                        .insert(
+                            ModelSensor(
+                                latitude = latlngPoint?.latitude ?: 9999.0,
+                                longitude = latlngPoint?.longitude ?: 9999.0,
+                                pressure = pressure,
+                                temperature = temperature,
+                                tripId = tripId
+                            )
+                        ).toInt()
+                }
+            }
         }
     }
 
