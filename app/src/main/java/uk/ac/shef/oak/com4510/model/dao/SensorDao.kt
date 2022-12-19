@@ -29,7 +29,7 @@ interface SensorDao {
     fun getAllSensors() : Flow<List<Sensor>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(sensor: Sensor)
+    suspend fun insert(sensor: Sensor): Long
 
     @Query("DELETE FROM sensor")
     suspend fun deleteAllSensors()

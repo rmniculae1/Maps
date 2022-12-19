@@ -29,7 +29,7 @@ interface PhotoDao {
     fun getPhotosFromSensor(given_id: Int) : Flow<List<Photo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(photo: Photo)
+    suspend fun insert(photo: Photo): Long
 
     @Query("DELETE FROM photo")
     suspend fun deleteAllPhotos()

@@ -25,7 +25,7 @@ import androidx.room.PrimaryKey
 )
 data class Sensor(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val latitude: Double,
     val longitude: Double,
     val pressure: Double,

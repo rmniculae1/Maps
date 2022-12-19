@@ -1,5 +1,6 @@
 package uk.ac.shef.oak.com4510.view
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,7 +10,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -20,12 +23,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
 import uk.ac.shef.oak.com4510.databinding.ActivityPictureBinding
+import uk.ac.shef.oak.com4510.model.data.AppDatabase
 import uk.ac.shef.oak.com4510.model.data.Photo
 import java.io.File
 import java.io.IOException
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,7 +44,9 @@ class PictureActivity : AppCompatActivity() {
 
     private var tripId = 0
 
-    private lateinit var imageView: ImageView
+    private var sensorId = 0
+
+    private lateinit var photoUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +55,12 @@ class PictureActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tripId = intent.extras?.getInt("tripId") ?: 0
+        sensorId = intent.extras?.getInt("sensorId") ?: 0
+
         dispatchTakePictureIntent()
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -65,25 +79,33 @@ class PictureActivity : AppCompatActivity() {
             takePictureIntent.resolveActivity(packageManager)?.also {
                 createImageFile().
                 also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
+                    photoUri = FileProvider.getUriForFile(
                         this,
                         "uk.ac.shef.oak.com4510.fileprovider",
                         it,
                     )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            imageView.setImageBitmap(imageBitmap)
+            Log.d("test", "photoUri: $photoUri")
             Log.d("test", "ok")
+            val db = AppDatabase.getDatabase(applicationContext)
+            val photoDao = db.photoDao()
+            GlobalScope.launch {
+                val photo_id = photoDao.insert(Photo(path= Paths.get(photoUri.path), metadata = "", tripId = tripId, sensorId = sensorId))
+
+                Log.d("test", "photoId: $photo_id")
+
+            }
         }
     }
 }

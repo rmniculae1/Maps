@@ -29,10 +29,12 @@ import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
 import uk.ac.shef.oak.com4510.model.data.AppDatabase
 import uk.ac.shef.oak.com4510.model.data.Trip
+import uk.ac.shef.oak.com4510.model.data.Sensor as ModelSensor
 import java.io.Serializable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * MapsActivity
@@ -53,6 +55,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var i = 0
     private var ok = 0
     private var tripId = 0
+    private var sensorId = 0
+    private var pressure = 0.0
+    private var temperature = 0.0
 
     private lateinit var sensorManager: SensorManager
     private lateinit var mLocationRequest: LocationRequest
@@ -89,6 +94,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .toInt()
         }
 
+
+            fixedRateTimer("timer", false, 5000L, 20 * 1000) {
+                runBlocking {
+                    sensorId = AppDatabase
+                        .getDatabase(applicationContext)
+                        .sensorDao()
+                        .insert(
+                            ModelSensor(
+                                latitude = latlngPoint?.latitude ?: 9999.0,
+                                longitude = latlngPoint?.longitude ?: 9999.0,
+                                pressure = pressure,
+                                temperature = temperature,
+                                tripId = tripId
+                            )
+                        ).toInt()
+                }
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -96,9 +119,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mButtonPic = findViewById<View>(R.id.button_pic) as Button
         mButtonPic!!.setOnClickListener {
-            // TODO: Make picure (ock)
             val intent = Intent(this, PictureActivity::class.java)
             intent.putExtra("tripId", tripId)
+            intent.putExtra("sensorId", sensorId)
 
             this.startActivity(intent)
         }
@@ -311,11 +334,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.addPolyline(polylineOptions)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pointA, 15f))
+
+
     }
 
     fun calculatePressure(callback: (Double) -> Unit) {
-        var pressure = 0.0 // Initialize pressure to 0.0
-
         // Use the barometric sensor to get the current pressure
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)

@@ -14,7 +14,7 @@ import java.util.Date
 @Entity(tableName = "trip")
 data class Trip(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Int = 0,
     val date: Date,
     val title: String,
 )
