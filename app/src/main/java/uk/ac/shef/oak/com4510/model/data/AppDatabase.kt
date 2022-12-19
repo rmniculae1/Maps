@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import uk.ac.shef.oak.com4510.model.dao.PhotoDao
+import uk.ac.shef.oak.com4510.model.dao.SensorDao
 import uk.ac.shef.oak.com4510.model.dao.TripDao
 import uk.ac.shef.oak.com4510.model.extensions.Converters
 
@@ -21,6 +23,10 @@ import uk.ac.shef.oak.com4510.model.extensions.Converters
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tripDao(): TripDao
+
+    abstract fun photoDao(): PhotoDao
+
+    abstract fun sensorDao(): SensorDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

@@ -20,10 +20,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -32,6 +29,7 @@ import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
 import uk.ac.shef.oak.com4510.model.data.AppDatabase
 import uk.ac.shef.oak.com4510.model.data.Trip
+import java.io.Serializable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var ok = 0
     private var tripId = 0
 
+    private lateinit var sensorManager: SensorManager
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
@@ -73,7 +72,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //get the title of the trip
         val extras = intent.extras
         if (extras != null) {
             title = extras.getString("title").toString()
@@ -96,7 +94,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        //take a picture
         mButtonPic = findViewById<View>(R.id.button_pic) as Button
         mButtonPic!!.setOnClickListener {
             // TODO: Make picure (ock)
@@ -106,27 +103,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             this.startActivity(intent)
         }
 
-
+        txtView = findViewById(R.id.visitLabel)
 
         mButtonEnd = findViewById(R.id.button_end) as Button
-        mButtonEnd!!.setOnClickListener {
+        mButtonEnd!!.setOnClickListener{
             val intent = Intent(this, NewVisitActivity::class.java)
             this.startActivity(intent)
         }
 
-        // label showing the pressure
-        txtView = findViewById(R.id.visitLabel)
-
-
-        // callback function that updates the pressure
         calculatePressure { pressure ->
             if (ok == 0) {
-
-                // first measurement of the pressure and the location
                 if (i == 20) {
 
                     txtView.text =
-                        "Pressure: $pressure" // calculates pressure for the first time
+                        "Pressure: $pressure" // Calculate pressure for the first time
                     ok = 1
                     mLocationRequest = LocationRequest.create().apply {
                         interval = 5000
@@ -139,7 +129,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 }
             }
-            // creates the TRIP in database
             if (ok == 1 && i == 30) {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 //val date: Date = dateFormat.parse(date.toString())
@@ -151,11 +140,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 ok = 2
             }
 
-            // updates the pressure and pressure every 20 seconds in database
+
             if (i == 300 && ok == 2) {
 
                 txtView.text =
-                    "Pressure: " + pressure.toString()  // updates the label every 20 seconds
+                    "Pressure: " + pressure.toString()  // Update the label every 20 seconds
 
 
                 mLocationRequest = LocationRequest.create().apply {
@@ -167,9 +156,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 startLocationUpdates()
                 Log.d("test", latlngPoint.toString())
                 Log.d("test", pressure.toString())
-
             } else if (i == 302 && ok == 2) {
-                stopLocationUpdates() //stops the service between updates
+                stopLocationUpdates()
                 i = 0;
             }
             i++
@@ -179,7 +167,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     /**
-     * Stops the location updates
+     * it stops the location updates
      */
     fun stopLocationUpdates() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
@@ -187,9 +175,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d("MAP", "services stopped")
     }
 
-    /**
-     * Starts the location updates
-     */
+
     fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -231,7 +217,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    //returns the location service results
     private var mCurrentLocation: Location? = null
     private var mLastUpdateTime: String? = null
     private var mLocationCallback: LocationCallback = object : LocationCallback() {
@@ -260,10 +245,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    /**
-     * Requests permission to use device's location
-     *
-     */
     @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -316,13 +297,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
+        val pointA = LatLng(-33.852, 151.211)
+        val pointB = LatLng(-33.854, 151.213)
+
+
+        val polylineOptions = PolylineOptions()
+            .color(Color.BLUE)
+            .width(5f)
+
+
+        polylineOptions.add(pointA, pointB)
+
+
+        mMap.addPolyline(polylineOptions)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pointA, 15f))
     }
 
-
-    /**
-     * Calculates the pressure
-     *
-     */
     fun calculatePressure(callback: (Double) -> Unit) {
         var pressure = 0.0 // Initialize pressure to 0.0
 
@@ -347,7 +337,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         } else {
-            Log.d("error", "Error: No pressure sensor found")
+            Log.d("ceva", "Error: No pressure sensor found")
         }
     }
 

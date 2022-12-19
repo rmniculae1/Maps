@@ -32,7 +32,7 @@ import java.nio.file.Path
 )
 data class Photo(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val path: Path,
     val metadata: String,
 

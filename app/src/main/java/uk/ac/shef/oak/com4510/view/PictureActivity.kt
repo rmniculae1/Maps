@@ -1,18 +1,29 @@
 package uk.ac.shef.oak.com4510.view
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import uk.ac.shef.oak.com4510.R
+import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
 import uk.ac.shef.oak.com4510.databinding.ActivityPictureBinding
+import uk.ac.shef.oak.com4510.model.data.Photo
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -41,7 +52,6 @@ class PictureActivity : AppCompatActivity() {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        Log.d("test", "poza")
         return File.createTempFile(
             "JPEG_${timeStamp}_TRIP_${tripId}_", /* prefix */
             ".jpg", /* suffix */
