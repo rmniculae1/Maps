@@ -56,9 +56,11 @@ class PicturesMapActivity : AppCompatActivity(), OnMapReadyCallback {
             pics.collect { pic ->
                 // Process each list of integers
                 pic.forEach { item ->
-                    val picData = sensorDao.getSensor(item.sensorId)
-                    val lat = picData.
-                    val picLocation = LatLng(picData.lati , 151.0)
+
+                    val picData = sensorDao.getSensor(item.sensorId).collect{ sensor ->
+                        val picLocation = LatLng(sensor.latitude , sensor.longitude)
+                    }
+
                 }
             }
         }
