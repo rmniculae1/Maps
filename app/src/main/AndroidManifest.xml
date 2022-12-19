@@ -72,6 +72,11 @@
             android:name=".view.TripViewer"
             android:exported="false"
             android:label="@string/title_activity_trip_viewer" />
+
+        <activity
+            android:name=".view.PictureActivity"
+            android:exported="false"
+        />
     </application>
 
 </manifest>

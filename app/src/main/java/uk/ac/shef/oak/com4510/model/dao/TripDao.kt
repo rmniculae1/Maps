@@ -20,7 +20,7 @@ interface TripDao {
     fun getTrip(given_id: Int) : Flow<Trip>
 
     @Query("SELECT * from trip")
-    suspend fun getAllTrips() : Flow<List<Trip>>
+    fun getAllTrips() : Flow<List<Trip>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(trip: Trip): Long

@@ -9,6 +9,8 @@ import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
+import uk.ac.shef.oak.com4510.databinding.ActivityPictureBinding
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -24,6 +26,10 @@ class PictureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val binding = ActivityPictureBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         tripId = intent.extras?.getInt("tripId") ?: 0
         dispatchTakePictureIntent()
     }
