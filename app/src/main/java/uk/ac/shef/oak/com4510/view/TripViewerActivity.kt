@@ -14,7 +14,7 @@ import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityTripViewerBinding
 
 
-class TripViewer : AppCompatActivity(), OnMapReadyCallback {
+class TripViewerActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityTripViewerBinding
@@ -47,9 +47,7 @@ class TripViewer : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
 
         val polylineOptions = PolylineOptions()
             .color(Color.BLUE)
@@ -73,8 +71,9 @@ class TripViewer : AppCompatActivity(), OnMapReadyCallback {
                 polylineOptions.add(points.get(i), points.get(i+1))
                 mMap.addPolyline(polylineOptions)
                 mMap.addMarker(MarkerOptions().position(points.get(i)).title("Picture number: ${i}"))
-
             }
+            mMap.addMarker(MarkerOptions().position(points.get(points.size-1)).title("Picture number: ${points.size-1}"))
+
         }
 
     }

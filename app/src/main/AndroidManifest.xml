@@ -9,9 +9,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
-
 
     <application
         android:allowBackup="true"
@@ -37,7 +37,21 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAQ4ZDGyQlHdzmY28GwFEG_JxtPFQ59sAU" />
+            android:value="YOUR_API_KEY" />
+
+        <activity
+            android:name=".view.PicturesMapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_pictures_map" />
+        <activity
+            android:name=".view.MenuActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -62,21 +76,17 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".view.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps" />
-
         <activity
-            android:name=".view.TripViewer"
+            android:name=".view.TripViewerActivity"
             android:exported="false"
             android:label="@string/title_activity_trip_viewer" />
-
         <activity
             android:name=".view.PictureActivity"
-            android:exported="false"
-        />
+            android:exported="false" />
     </application>
 
 </manifest>

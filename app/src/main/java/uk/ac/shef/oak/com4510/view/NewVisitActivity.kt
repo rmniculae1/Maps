@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import uk.ac.shef.oak.com4510.R
-import java.util.*
 import uk.ac.shef.oak.com4510.databinding.ActivityNewVisitBinding
 import java.io.Serializable
+import java.util.*
 
 /**
  * NewVisitActivity
@@ -66,6 +63,9 @@ class NewVisitActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Calculates current time and date
+     */
     @SuppressLint("SetTextI18n")
     fun getTimeDate(dateView: TextView, timeView: TextView) {
 
