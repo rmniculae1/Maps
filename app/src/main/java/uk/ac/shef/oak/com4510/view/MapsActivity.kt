@@ -105,6 +105,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         txtView = findViewById(R.id.visitLabel)
 
+        mButtonEnd = findViewById(R.id.button_end) as Button
+        mButtonEnd!!.setOnClickListener{
+            val intent = Intent(this, NewVisitActivity::class.java)
+            this.startActivity(intent)
+        }
+
         calculatePressure { pressure ->
             if (ok == 0) {
                 if (i == 20) {
