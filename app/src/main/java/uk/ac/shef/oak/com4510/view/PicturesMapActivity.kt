@@ -1,8 +1,7 @@
 package uk.ac.shef.oak.com4510.view
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,15 +12,12 @@ import kotlinx.coroutines.runBlocking
 import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityPicturesMapBinding
 import uk.ac.shef.oak.com4510.model.data.AppDatabase
-import uk.ac.shef.oak.com4510.model.data.Sensor
 
 class PicturesMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityPicturesMapBinding
-    private val db = AppDatabase.getDatabase(this)
-    private val photoDao = db.photoDao()
-    private val sensorDao = db.sensorDao()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,25 +41,27 @@ class PicturesMapActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
+        val db = AppDatabase.getDatabase(applicationContext)
+        val photoDao = db.photoDao()
+        val sensorDao = db.sensorDao()
         mMap = googleMap
         val pics = photoDao.getAllPhotos()
+        var lastPic: LatLng? = null
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         runBlocking {
             pics.collect { pic ->
                 // Process each list of integers
                 pic.forEach { item ->
-
-                    val picData = sensorDao.getSensor(item.sensorId).collect{ sensor ->
-                        val picLocation = LatLng(sensor.latitude , sensor.longitude)
+                    val picData = sensorDao.getSensor(item.sensorId).collect { sensor ->
+                        val picLocation = LatLng(sensor.latitude, sensor.longitude)
+                        mMap.addMarker(MarkerOptions().position(picLocation).title("Picture"))
+                        lastPic = picLocation
                     }
-
                 }
             }
         }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lastPic!!))
 
 
     }
