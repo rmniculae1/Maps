@@ -45,6 +45,8 @@ class PicturesMapActivity : AppCompatActivity(), OnMapReadyCallback {
         val photoDao = db.photoDao()
         val sensorDao = db.sensorDao()
         mMap = googleMap
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         val pics = photoDao.getAllPhotos()
         var lastPic: LatLng? = null
 
