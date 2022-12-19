@@ -3,6 +3,7 @@ package uk.ac.shef.oak.com4510.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.Sensor
@@ -23,8 +24,12 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.runBlocking
 import uk.ac.shef.oak.com4510.R
 import uk.ac.shef.oak.com4510.databinding.ActivityMapsBinding
+import uk.ac.shef.oak.com4510.model.data.AppDatabase
+import uk.ac.shef.oak.com4510.model.data.Trip
+import java.io.Serializable
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,21 +46,22 @@ import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var txtView: TextView
 
-
     private var i = 0
     private var ok = 0
+    private var tripId = 0
 
     private lateinit var sensorManager: SensorManager
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+
     private var mButtonEnd: Button? = null
     private var mButtonPic: Button? = null
     private var latlngPoint: Location? = null
+
     private lateinit var title: String
     private lateinit var date: Date
 
@@ -75,6 +81,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        runBlocking {
+            tripId = AppDatabase
+                .getDatabase(applicationContext)
+                .tripDao()
+                .insert(Trip(tripId, date, title))
+                .toInt()
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -82,7 +96,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mButtonPic = findViewById<View>(R.id.button_pic) as Button
         mButtonPic!!.setOnClickListener {
+            // TODO: Make picure (ock)
+            val intent = Intent(this, PictureActivity::class.java)
+            intent.putExtra("tripId", tripId)
 
+            this.startActivity(intent)
         }
 
         txtView = findViewById(R.id.visitLabel)
@@ -92,7 +110,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (i == 20) {
 
                     txtView.text =
-                        "Pressure: " + pressure.toString() // Calculate pressure for the first time
+                        "Pressure: $pressure" // Calculate pressure for the first time
                     ok = 1
                     mLocationRequest = LocationRequest.create().apply {
                         interval = 5000

@@ -7,7 +7,7 @@ plugins {
 android {
     signingConfigs {
         debug {
-            storeFile file('/Users/raduabcdurs/Downloads/keyStore.jks')
+            storeFile file("C:\\Users\\R.Pultea\\Downloads\\keyStore.jks")
             storePassword 'com4510iscool'
             keyAlias 'com4510'
             keyPassword 'com4510iscool'
@@ -49,7 +49,7 @@ android {
 }
 
 dependencies {
-
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'

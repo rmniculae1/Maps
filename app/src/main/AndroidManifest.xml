@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
 
     <application
         android:allowBackup="true"
@@ -31,12 +37,18 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="AIzaSyAQ4ZDGyQlHdzmY28GwFEG_JxtPFQ59sAU" />
 
-        <activity
-            android:name=".view.TripViewer"
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="uk.ac.shef.oak.com4510.fileprovider"
             android:exported="false"
-            android:label="@string/title_activity_trip_viewer" />
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
             android:name=".view.NewVisitActivity"
             android:exported="true">
@@ -50,10 +62,16 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".view.MapsActivity"
             android:exported="true"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+
+        <activity
+            android:name=".view.TripViewer"
+            android:exported="false"
+            android:label="@string/title_activity_trip_viewer" />
     </application>
 
 </manifest>

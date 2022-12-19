@@ -23,7 +23,7 @@ interface TripDao {
     suspend fun getAllTrips() : Flow<List<Trip>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(trip: Trip)
+    suspend fun insert(trip: Trip): Long
 
     @Query("DELETE FROM trip")
     suspend fun deleteAllTrips()
