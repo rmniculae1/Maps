@@ -99,15 +99,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        mButtonPic = findViewById<View>(R.id.button_pic) as Button
-        mButtonPic!!.setOnClickListener {
-            val intent = Intent(this, PictureActivity::class.java)
-            intent.putExtra("tripId", tripId)
-            intent.putExtra("sensorId", sensorId)
-
-            this.startActivity(intent)
-        }
-
         txtView = findViewById(R.id.visitLabel)
 
         mButtonEnd = findViewById(R.id.button_end) as Button
@@ -168,6 +159,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             i++
         }
 
+        fixedRateTimer("timer", false, 0L, 20 * 1000) {
+            runBlocking {
+                sensorId = AppDatabase
+                    .getDatabase(applicationContext)
+                    .sensorDao()
+                    .insert(
+                        ModelSensor(
+                            latitude = latlngPoint?.latitude ?: 9999.0,
+                            longitude = latlngPoint?.longitude ?: 9999.0,
+                            pressure = pressure,
+                            temperature = temperature,
+                            tripId = tripId
+                        )
+                    ).toInt()
+            }
+        }
+
+        mButtonPic = findViewById<View>(R.id.button_pic) as Button
+        mButtonPic!!.setOnClickListener {
+            val intent = Intent(this, PictureActivity::class.java)
+            intent.putExtra("tripId", tripId)
+            intent.putExtra("sensorId", sensorId)
+
+            this.startActivity(intent)
+        }
 
     }
 
@@ -247,23 +263,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     ), 14.0f
                 )
             )
-
-            fixedRateTimer("timer", false, 0L, 20 * 1000) {
-                runBlocking {
-                    sensorId = AppDatabase
-                        .getDatabase(applicationContext)
-                        .sensorDao()
-                        .insert(
-                            ModelSensor(
-                                latitude = latlngPoint?.latitude ?: 9999.0,
-                                longitude = latlngPoint?.longitude ?: 9999.0,
-                                pressure = pressure,
-                                temperature = temperature,
-                                tripId = tripId
-                            )
-                        ).toInt()
-                }
-            }
         }
     }
 

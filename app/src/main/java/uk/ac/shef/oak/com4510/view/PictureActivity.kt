@@ -98,6 +98,7 @@ class PictureActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Log.d("test", "photoUri: $photoUri")
             Log.d("test", "ok")
+            Log.d("test", "sensor_id: $sensorId.toString()")
             val db = AppDatabase.getDatabase(applicationContext)
             val photoDao = db.photoDao()
             GlobalScope.launch {
