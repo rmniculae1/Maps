@@ -19,14 +19,6 @@ class MenuViewModelViewModel : MenuViewModelInterface {
         context.startActivity(intent)
     }
 
-    override fun startPicture(context: Context) {
-        //Creates an Intent object for the activity that you want to open
-        val intent = Intent(context, PictureActivity::class.java)
-
-        // Starts the new activity using the Intent object
-        context.startActivity(intent)
-
-    }
 
     override fun startGallery(context: Context) {
 //        //Creates an Intent object for the activity that you want to open

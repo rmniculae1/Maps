@@ -66,6 +66,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mButtonEnd: Button? = null
     private var mButtonPic: Button? = null
     private var latlngPoint: Location? = null
+    private var nextPoint: Location? = null
 
     private lateinit var title: String
     private lateinit var date: Date
@@ -126,17 +127,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             if (ok == 1 && i == 30) {
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                //val date: Date = dateFormat.parse(date.toString())
-                Log.d("test", latlngPoint.toString())
-                Log.d("test", pressure.toString())
-                Log.d("test", title)
-                Log.d("test", date.toString())
+//                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//                val date: Date = dateFormat.parse(date.toString())
+//                Log.d("test", latlngPoint.toString())
+//                Log.d("test", pressure.toString())
+//                Log.d("test", title)
+//                Log.d("test", date.toString())
                 stopLocationUpdates()
                 ok = 2
             }
 
-
+            if (i == 299 && ok == 2) {
+                nextPoint = latlngPoint
+            }
             if (i == 300 && ok == 2) {
 
                 txtView.text =
@@ -150,8 +153,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
                 startLocationUpdates()
-                Log.d("test", latlngPoint.toString())
-                Log.d("test", pressure.toString())
+
+//                Log.d("test", latlngPoint.toString())
+//                Log.d("test", pressure.toString())
             } else if (i == 302 && ok == 2) {
                 stopLocationUpdates()
                 i = 0;
@@ -174,10 +178,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
                     ).toInt()
             }
+
         }
 
         mButtonPic = findViewById<View>(R.id.button_pic) as Button
         mButtonPic!!.setOnClickListener {
+            val picLocation = LatLng(
+                (latlngPoint?.latitude ?: 0) as Double,
+                (latlngPoint?.longitude ?: 0) as Double
+            )
+            mMap.addMarker(MarkerOptions().position(picLocation).title("Picture"))
             val intent = Intent(this, PictureActivity::class.java)
             intent.putExtra("tripId", tripId)
             intent.putExtra("sensorId", sensorId)
@@ -318,20 +328,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
-        val pointA = LatLng(-33.852, 151.211)
-        val pointB = LatLng(-33.854, 151.213)
-
 
         val polylineOptions = PolylineOptions()
             .color(Color.BLUE)
             .width(5f)
 
-
-        polylineOptions.add(pointA, pointB)
-
-
-        mMap.addPolyline(polylineOptions)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pointA, 15f))
+        // Adds the path
+        if (nextPoint != null) {
+            val pointA = LatLng(nextPoint!!.latitude, nextPoint!!.longitude)
+            val pointB = LatLng(latlngPoint!!.latitude, latlngPoint!!.longitude)
+            polylineOptions.add(pointA, pointB)
+            mMap.addPolyline(polylineOptions)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pointA, 15f))
+        }
 
 
     }
