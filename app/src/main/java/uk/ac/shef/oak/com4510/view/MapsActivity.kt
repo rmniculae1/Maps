@@ -29,6 +29,16 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * MapsActivity
+ *
+ * An activity that displays a map on the screen.
+ * It uses the Google Maps API to show the map and current user location every 20 seconds
+ * It uses the barometric sensor to update the pressure every 20 seconds
+ * It allows users to take pictures and adds a tag in that location
+ *
+ */
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 

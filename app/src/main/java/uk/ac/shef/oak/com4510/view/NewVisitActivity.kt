@@ -9,11 +9,21 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import uk.ac.shef.oak.com4510.R
 import java.util.*
 import uk.ac.shef.oak.com4510.databinding.ActivityNewVisitBinding
 import java.io.Serializable
+
+/**
+ * NewVisitActivity
+ *
+ * An activity that displays allows the user to create a new visit
+ * It shows the current date and time and asks the user to insert the visit's title
+ *
+ */
+
 
 class NewVisitActivity : AppCompatActivity() {
 
@@ -27,8 +37,8 @@ class NewVisitActivity : AppCompatActivity() {
         setContentView(binding.root)
         mButtonStart = findViewById<Button>(R.id.startBtn) as Button
         titleTxt = findViewById<TextView>(R.id.titleInput)
-        val dateView : TextView = findViewById<TextView>(R.id.dateView)
-        val timeView : TextView = findViewById<TextView>(R.id.timeView)
+        val dateView: TextView = findViewById<TextView>(R.id.dateView)
+        val timeView: TextView = findViewById<TextView>(R.id.timeView)
         getTimeDate(dateView, timeView)
 
         val handler = Handler()
@@ -42,19 +52,22 @@ class NewVisitActivity : AppCompatActivity() {
 
         handler.post(runnableCode)
         mButtonStart!!.setOnClickListener {
-            val intent = Intent(this, MapsActivity::class.java)
-            intent.putExtra("title", titleTxt.text.toString())
-            intent.putExtra("date", date as Serializable)
-
-            this.startActivity(intent)
-
+            if (titleTxt.text.toString() == "") {
+                val toast = Toast.makeText(this, "Add a title for your trip!", Toast.LENGTH_SHORT)
+                toast.show()
+            } else {
+                val intent = Intent(this, MapsActivity::class.java)
+                intent.putExtra("title", titleTxt.text.toString())
+                intent.putExtra("date", date as Serializable)
+                this.startActivity(intent)
+            }
         }
 
 
     }
 
     @SuppressLint("SetTextI18n")
-    fun getTimeDate(dateView : TextView, timeView : TextView){
+    fun getTimeDate(dateView: TextView, timeView: TextView) {
 
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
