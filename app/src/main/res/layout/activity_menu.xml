@@ -79,7 +79,7 @@
 
         <variable
             name="activityMenuModel"
-            type="uk.ac.shef.oak.com4510.viewmodel.MainActivityViewModel" />
+            type="uk.ac.shef.oak.com4510.viewmodel.MenuViewModelViewModel" />
 
     </data>
 

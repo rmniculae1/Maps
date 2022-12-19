@@ -8,7 +8,7 @@ plugins {
 android {
     signingConfigs {
         debug {
-            storeFile file("C:\\Users\\R.Pultea\\Downloads\\keyStore.jks")
+            storeFile file('/Users/raduabcdurs/Downloads/keyStore.jks')
             storePassword 'com4510iscool'
             keyAlias 'com4510'
             keyPassword 'com4510iscool'

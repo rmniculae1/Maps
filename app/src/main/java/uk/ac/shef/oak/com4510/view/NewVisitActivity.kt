@@ -25,6 +25,7 @@ import java.util.*
 class NewVisitActivity : AppCompatActivity() {
 
     private var mButtonStart: Button? = null
+    private var mButtonEnd: Button? = null
     private lateinit var titleTxt: TextView
     private lateinit var date: Date
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +34,7 @@ class NewVisitActivity : AppCompatActivity() {
 
         setContentView(binding.root)
         mButtonStart = findViewById<Button>(R.id.startBtn) as Button
+        mButtonEnd = findViewById<Button>(R.id.menuBtn) as Button
         titleTxt = findViewById<TextView>(R.id.titleInput)
         val dateView: TextView = findViewById<TextView>(R.id.dateView)
         val timeView: TextView = findViewById<TextView>(R.id.timeView)
@@ -58,6 +60,11 @@ class NewVisitActivity : AppCompatActivity() {
                 intent.putExtra("date", date as Serializable)
                 this.startActivity(intent)
             }
+        }
+
+        mButtonEnd!!.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            this.startActivity(intent)
         }
 
 
