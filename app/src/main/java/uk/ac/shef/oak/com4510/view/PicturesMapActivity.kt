@@ -50,6 +50,8 @@ class PicturesMapActivity : AppCompatActivity(), OnMapReadyCallback {
         val pics = photoDao.getAllPhotos()
         var lastPic: LatLng? = null
 
+        // Fetching the pictures and respective sensors from the database as a Flow, then
+        // collecting it from an async stream
         runBlocking {
             pics.collect { pic ->
                 // Process each list of integers
